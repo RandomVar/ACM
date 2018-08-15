@@ -20,7 +20,7 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
             pass System Test!
 */
-/**/
+/*genggai*/
 #include<cstdio>
 #include<iostream>
 #include<queue>
