@@ -2,62 +2,62 @@
 # =========================
 
 # Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+.slo
+.lo
+.o
+.obj
 
 # Precompiled Headers
-*.gch
-*.pch
+.gch
+.pch
 
 # Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
+.so
+.dylib
+.dll
 
 # Fortran module files
-*.mod
+.mod
 
 # Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
+.lai
+.la
+.a
+.lib
 
 # Executables
-*.exe
-*.out
-*.app
+.exe
+.out
+.app
 
 # Input files
-*.in
+.in
 
 # Java
 # =========================
 
 # Compiled class file
-*.class
+.class
 
 # Log file
-*.log
+.log
 
 # BlueJ files
-*.ctxt
+.ctxt
 
 # Mobile Tools for Java (J2ME)
-.mtj.tmp/
+.mtj.tmp
 
 # Package Files #
-*.jar
-*.war
-*.ear
-*.zip
-*.tar.gz
-*.rar
+.jar
+.war
+.ear
+.zip
+.tar.gz
+.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# virtual machine crash logs, see httpwww.java.comendownloadhelperror_hotspot.xml
+hs_err_pid
 
 # =========================
 # Operating System Files
@@ -71,7 +71,7 @@ hs_err_pid*
 .LSOverride
 
 # Thumbnails
-._*
+._
 
 # Files that might appear in the root of a volume
 .DocumentRevisions-V100
@@ -99,18 +99,18 @@ ehthumbs.db
 Desktop.ini
 
 # Recycle Bin used on file shares
-$RECYCLE.BIN/
+$RECYCLE.BIN
 
 # Windows Installer files
-*.cab
-*.msi
-*.msm
-*.msp
+.cab
+.msi
+.msm
+.msp
 
 # Windows shortcuts
-*.lnk
+.lnk
 
 # =========================
 # VSCode Setting Files
 # =========================
-*.json
+.json
