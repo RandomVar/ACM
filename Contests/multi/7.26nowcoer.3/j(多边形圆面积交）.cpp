@@ -1,7 +1,8 @@
+/*
 作者：ccl66💡🎈
 链接：https://www.nowcoder.com/discuss/88646?type=101&order=0&pos=2&page=0
 来源：牛客网
-
+*/
 #include<iostream>
 #include<cstdio>
 #include<cmath>
