@@ -2,18 +2,13 @@
 using namespace std;
 const int inf=0x3f3f3f3f;
 const int maxn=1e3+100;
-char aa[]={'A','G','C','T'};
-int id(char a)
-{
-    for(int i=0;i<4;i++)
-      if(aa[i]==a) return i;
-}
+map<char,int>mp;
 struct trie{
-     int next[maxn][4],fail[maxn],ed[maxn];
+     int Next[maxn][4],fail[maxn],ed[maxn];
    int root,cnt;
    int newnode(){
       for(int i=0;i<4;i++)
-        next[cnt][i]=-1;
+        Next[cnt][i]=-1;
       ed[cnt++]=0;
       return cnt-1;
    }
@@ -27,32 +22,33 @@ struct trie{
      int len=strlen(buf);
      int now=root;
      for(int i=0;i<len;i++){
-         if(next[now][id(buf[i])]==-1)
-             next[now][id(buf[i])]=newnode();
-         now=next[now][id(buf[i])];
+         if(Next[now][mp[buf[i]]]==-1)
+             Next[now][mp[buf[i]]]=newnode();
+         now=Next[now][mp[buf[i]]];
      }
-     ed[now]++;
+     ed[now]=1;
    }
 
    void build(){
      queue<int>que;
      fail[root]=root;
      for(int i=0;i<4;i++){
-        if(next[root][i]==-1)
-             next[root][i]=root;
+        if(Next[root][i]==-1)
+             Next[root][i]=root;
         else{
-            fail[next[root][i]]=root;
-            que.push(next[root][i]);
+            fail[Next[root][i]]=root;
+            que.push(Next[root][i]);
         }}
         while(!que.empty()){
             int now=que.front();
             que.pop();
+            ed[now]|=ed[fail[now]];
             for(int i=0;i<4;i++){
-                if(next[now][i]==-1)
-                    next[now][i]=next[fail[now]][i];
+                if(Next[now][i]==-1)
+                    Next[now][i]=Next[fail[now]][i];
                 else{
-                    fail[next[now][i]]=next[fail[now]][i];
-                    que.push(next[now][i]);
+                    fail[Next[now][i]]=Next[fail[now]][i];
+                    que.push(Next[now][i]);
                 }
             }
         }
@@ -60,32 +56,26 @@ struct trie{
    int dp[maxn][maxn];
    int query(char *buf)
    {
-       memset(dp,0x3f,sizeof(dp));
-     //  for(int i=0;i<cnt;i++)
-           dp[0][0]=0;
-          // cout<<cnt<<endl;
-        int len=strlen(buf);
-      for(int t=0;t<len;t++)
-     {
-         for(int i=0;i<cnt;i++)
-          {
-              if(dp[t][i]==inf) continue;
-            for(int j=0;j<4;j++)
-            {
-                int k=next[i][j];
-                if(ed[k]) continue;
-                if(id(buf[t])==j) dp[t+1][k]=min(dp[t+1][k],dp[t][i]);
-               else dp[t+1][k]=min(dp[t+1][k],dp[t][i]+1);
-             }
-        }
-     }
-     int ans=inf;
-     for(int i=0;i<cnt;i++)
-     {
-         if(ed[i]) continue;
-       ans=min(ans,dp[len][i]);
-     }
-    return ans;
+         int res = inf;
+    int len = strlen(buf);
+    for (int i = 0; i <= len; i++)
+        for (int j = 0; j < cnt; j++)
+            dp[i][j] = inf;
+    dp[0][0] = 0;
+    for (int i = 1; i <= len; i++)
+        for (int j = 0; j < cnt; j++)
+            for (int k = 0; k < 4; k++)
+                if (!ed[Next[j][k]]) {
+                    if (mp[buf[i - 1]]== k)
+                        dp[i][Next[j][k]] = min(dp[i][Next[j][k]], dp[i - 1][j]);
+                    else
+                        dp[i][Next[j][k]] = min(dp[i][Next[j][k]], dp[i - 1][j] + 1);
+                }
+    for (int i = 0; i < cnt; i++)
+        res = min(res, dp[len][i]);
+   if(res==inf)
+    res=-1;
+    return res;
    }
 };
 trie ac;
@@ -94,6 +84,10 @@ int main()
 {
       int n;
     int cas=0;
+    mp['A'] = 0;
+    mp['C'] = 1;
+    mp['G'] = 2;
+    mp['T'] = 3;
     while(scanf("%d",&n)==1&&n)
     {
         ac.init();
@@ -105,9 +99,8 @@ int main()
         ac.build();
         scanf("%s",buf);
         int ans=ac.query(buf);
-        printf("Case %d: ",++cas);
-        if(ans==inf) printf("-1\n");
-        else printf("%d\n",ans);
+        // printf("Case %d: ",++cas);
+        printf("Case %d: %d\n", ++cas, ans);
     }
     return 0;
 }
