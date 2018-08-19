@@ -1,3 +1,4 @@
+/*惨遭tle的hash做法*/
 #include<cstdio>
 #include<iostream>
 #include<queue>
