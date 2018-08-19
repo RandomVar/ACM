@@ -3,6 +3,9 @@ using namespace std;
 const int inf=0x3f3f3f3f;
 const int maxn=1e3+100;
 map<char,int>mp;
+/*
+以now节点结尾的后缀 与 root-fail[now]所表示的字符串 相同
+*/
 struct trie{
      int Next[maxn][4],fail[maxn],ed[maxn];
    int root,cnt;
@@ -42,17 +45,22 @@ struct trie{
         while(!que.empty()){
             int now=que.front();
             que.pop();
-            ed[now]|=ed[fail[now]];
+            cout<<now<<": ";
+            ed[now]|=ed[fail[now]];//now是fail[now]的后缀，所以若fail[now]不能匹配，那么now也不能匹配
             for(int i=0;i<4;i++){
                 if(Next[now][i]==-1)
                     Next[now][i]=Next[fail[now]][i];
                 else{
                     fail[Next[now][i]]=Next[fail[now]][i];
+                    cout<<"**"<<Next[now][i]<<" "<<fail[Next[now][i]]<<endl;;
                     que.push(Next[now][i]);
                 }
+                cout<<i<<"+"<<Next[now][i]<<" ";
             }
+            cout<<endl;
         }
      }
+  
    int dp[maxn][maxn];
    int query(char *buf)
    {
