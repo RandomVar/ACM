@@ -1,7 +1,14 @@
 /*
 https://www.nowcoder.com/acm/contest/view-submission?submissionId=31951275
 
+a[i][1] = a[i-1][1], a[i][j] = a[i][j-1] + a[i-1][j] (j >= 2)
+有1e5次操作 修改a[0][j]，查询a[i][j]的值
+j<=40,i<=1e5
 
+(x,y)分别对(x+1,y)和(x,y+1)产生1的影响，所以a[0][i]对(x,k)的影响即为(0,i)走到(x,k)的走法种数
+$a[x][k]=\sum_{1<=i<=x}\binom{x-i+k}{k}a[0][i]$，将其拆开推广到负数定义，用树状数组维护即可
+
+详见题解
 */
 #include<bits/stdc++.h>
 #define pb(x) push_back(x)

@@ -16,97 +16,84 @@ ll gcd(ll a,ll b) { return b?gcd(b,a%b):a;}
      freopen("data.out","w",stdout);
     #endif
 */
-const int maxn=1e4+100;
-int tree[maxn<<2];
-int dp[maxn][1<<4];
-int a[5][maxn];
-int pos[maxn][5][2];
-void pushup(int rt){
-  tree[rt]=max(tree[rt*2],tree[rt*2+1]);
-}
-
-void build(int l,int r,int rt){
-  if(l==r) {
-      tree[rt]=0;
-      return;
-      }
-  int mid=(l+r)/2;
-  build(l,mid,rt*2);
-  build(mid+1,r,rt*2+1);
-  pushup(rt);
-}
-
-int query(int l,int r,int L,int R,int rt){
- if(l>=L&&r<=R) 
-       return tree[rt];
- int ans=0;
- int mid=(l+r)/2;
- if(L<=mid){
-    ans=max(ans,query(l,mid,L,R,rt*2));
- }
- if(R>mid){
-    ans=max(ans,query(mid+1,r,L,R,rt*2+1));
- }
- return ans;
-}
-
-void update(int l,int r,int index,int val,int rt){
-  if(l==r) {
-    tree[rt]=max(tree[rt],val);
-    return;
-  }
-  int mid=(l+r)/2;
-  if(index<=mid)
-    update(l,mid,index,val,rt*2);
-
-  else update(mid+1,r,index,val,rt*2+1);
-  pushup(rt);
-}
-void init()
+const int maxn=1e5+100;
+int fail[5][maxn];
+char s[5][maxn];
+int ans[maxn];
+char st[maxn];
+int now[maxn];
+int prea;
+void getfail(char *x,int id)
 {
-    mem(pos,0);
-
+    int m=strlen(x);
+    int i = 0, j = fail[id][0] = -1;
+    while (i < m)
+    {
+        while (j != -1 && x[i] != x[j]) j = fail[id][j];
+        fail[id][++i] = ++j;
+    }
 }
+void kmp(char *y,int cnt)
+{
+ 
+   int n=strlen(y);
+  prea=inf;
+  for(int id=0;id<cnt;id++)
+  {
+         int i, j;
+         i = j = 0;
+      int top=-1;
+      int m=strlen(s[id]);
+       prea=min(prea,m);
+       while(i<n)
+       {
+         if(y[i]=='-')
+         {
+           if(top>=0) 
+               top--;
+           if(top>=0)   ans[i]=min(ans[i],ans[st[top]]);
+           else ans[i]=min(ans[i],m);
+           i++;
+           continue;
+         }
+         else {
+             if(top==-1) j=0;
+             else j=now[st[top]];
+             st[++top]=i;
+           }
+         while(j!=-1&&y[st[top]]!=s[id][j])
+           {
+                j=fail[id][j];
+           }
+       
+        ans[i]=min(ans[i],m-j-1);
+        //cout<<id<<"*"<<ans[i]<<" "<<i<<" "<<j<<endl;
+         i++,j++;
+         now[st[top]]=j;
+        if(j>=m) now[st[top]]=fail[id][j];
+     }
+   }
+}
+char buf[maxn];
 int main(){
+    freopen("data.in","r",stdin);
+     freopen("data.out","w",stdout);
  //ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
     int n;
     while(scanf("%d",&n)==1)
     {
-        init();
-        for(int i=0;i<4;i++)
+        mem(ans,0x3f);
+        for(int i=0;i<n;i++)
         {
-            for(int j=1;j<=n;j++)
-             {
-              cin>>a[i][j];
-             if(pos[a[i][j]][i][0]==0) pos[a[i][j]][i][0]=j;
-             ele pos[a[i][j]][i][1]=j;
-             }
+            scanf("%s",s[i]);
+            getfail(s[i],i);
         }
-        build(1,n,1);
-         for(int i=1;i<=n;i++)
-         {
-             int left=n+1;int right=-1;
-             for(int x=0;x<(1<<4);x++)
-             {
-                 int flag=1;
-                 for(int j=0;j<4;j++)
-                 {
-                    if(pos[i][j][x&(1<<j)]==0) {flag=0;break;}
-                     left=min(left,pos[i][j][x&(1<<j)]);
-                     right=max(right,pos[i][j][x&(1<<j)]);
-                 }
-                 if(flag==0) continue;
-                 int pre=query(1,n,1,left-1,1);//<=left-1
-                 dp[i][x]=max(dp[i][x],pre+1);
-             }
-             int ans=0;
-             for(int x=0;x<(1<<4);x++)
-             {
-                 ans=max(ans,dp[i][x]);
-             }
-              update(1,n,right,ans,1);
-         }
-         printf("%d\n",query(1,n,1,n,1));
+        scanf("%s",buf);
+        kmp(buf,n);
+        int len=strlen(buf);
+        printf("%d\n",prea);
+        for(int i=0;i<len;i++)
+          printf("%d\n",ans[i]);
     }
  return 0;
   }
