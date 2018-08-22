@@ -45,7 +45,7 @@ struct trie{
         while(!que.empty()){
             int now=que.front();
             que.pop();
-            cout<<now<<": ";
+         //   cout<<now<<": ";
             ed[now]|=ed[fail[now]];//now是fail[now]的后缀，所以若fail[now]不能匹配，那么now也不能匹配
             for(int i=0;i<4;i++){
                 if(Next[now][i]==-1)
@@ -55,7 +55,7 @@ struct trie{
                     cout<<"**"<<Next[now][i]<<" "<<fail[Next[now][i]]<<endl;;
                     que.push(Next[now][i]);
                 }
-                cout<<i<<"+"<<Next[now][i]<<" ";
+              //  cout<<i<<"+"<<Next[now][i]<<" ";
             }
             cout<<endl;
         }

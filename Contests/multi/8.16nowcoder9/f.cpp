@@ -1,3 +1,10 @@
+/*
+ 求四个模式串的前缀与字符串的每一个后缀的匹配中，模式串前缀到结尾的最短距离。字符串可退格。
+ 
+ AC自动机 bfs预处理出最短距离
+ 退格操作只要用栈模拟即可
+*/
+
 #include<bits/stdc++.h>
 #define pb(x) push_back(x)
 #define fir first
@@ -16,84 +23,133 @@ ll gcd(ll a,ll b) { return b?gcd(b,a%b):a;}
      freopen("data.out","w",stdout);
     #endif
 */
-const int maxn=1e5+100;
-int fail[5][maxn];
-char s[5][maxn];
-int ans[maxn];
-char st[maxn];
-int now[maxn];
-int prea;
-void getfail(char *x,int id)
-{
-    int m=strlen(x);
-    int i = 0, j = fail[id][0] = -1;
-    while (i < m)
-    {
-        while (j != -1 && x[i] != x[j]) j = fail[id][j];
-        fail[id][++i] = ++j;
-    }
-}
-void kmp(char *y,int cnt)
-{
- 
-   int n=strlen(y);
-  prea=inf;
-  for(int id=0;id<cnt;id++)
-  {
-         int i, j;
-         i = j = 0;
-      int top=-1;
-      int m=strlen(s[id]);
-       prea=min(prea,m);
-       while(i<n)
-       {
-         if(y[i]=='-')
-         {
-           if(top>=0) 
-               top--;
-           if(top>=0)   ans[i]=min(ans[i],ans[st[top]]);
-           else ans[i]=min(ans[i],m);
-           i++;
-           continue;
-         }
-         else {
-             if(top==-1) j=0;
-             else j=now[st[top]];
-             st[++top]=i;
-           }
-         while(j!=-1&&y[st[top]]!=s[id][j])
-           {
-                j=fail[id][j];
-           }
-       
-        ans[i]=min(ans[i],m-j-1);
-        //cout<<id<<"*"<<ans[i]<<" "<<i<<" "<<j<<endl;
-         i++,j++;
-         now[st[top]]=j;
-        if(j>=m) now[st[top]]=fail[id][j];
-     }
+const int maxnode=1e5+100;
+
+struct trie{
+   int next[maxnode][26],fail[maxnode],ed[maxnode];//attention
+   int st[maxnode];
+   int d[maxnode];
+   vector<int>edge[maxnode];
+   int root,cnt;
+   int newnode(){
+      for(int i=0;i<26;i++)
+        next[cnt][i]=-1;
+      ed[cnt++]=0;
+      return cnt-1;
    }
-}
-char buf[maxn];
+   
+   void init(){
+      cnt=0;
+      root=newnode();
+      for(int i=0;i<maxnode;i++)
+       edge[i].clear();
+      //mem(dis,0x3f);
+   }
+
+   void inser(char* buf){
+     int len=strlen(buf);
+     int now=root;
+     for(int i=0;i<len;i++)
+      {
+         if(next[now][buf[i]-'a']==-1)
+             next[now][buf[i]-'a']=newnode();
+         now=next[now][buf[i]-'a'];
+       //  dis[now]=min(dis[now],len-i-1);
+      }
+     ed[now]=1;
+   }
+
+   void build(){
+     queue<int>que;
+     fail[root]=root;
+    
+     for(int i=0;i<26;i++){
+        if(next[root][i]==-1)
+             next[root][i]=root;
+        else{
+            fail[next[root][i]]=root;
+            que.push(next[root][i]);
+        }
+        }
+        while(!que.empty()){
+            int now=que.front();
+            que.pop();
+            ed[now]|=ed[fail[now]];
+            for(int i=0;i<26;i++){
+                if(next[now][i]==-1)
+                    next[now][i]=next[fail[now]][i];
+                else{
+                    fail[next[now][i]]=next[fail[now]][i];
+                    que.push(next[now][i]);
+                }
+            }
+        }
+     }
+  
+  void bfs()
+  {
+         mem(d,-1);
+      queue<int>que;
+      for(int i=0;i<cnt;i++)
+        for(int j=0;j<26;j++)
+          edge[next[i][j]].pb(i);
+        for(int i=0;i<cnt;i++)
+           if(ed[i]) d[i]=0,que.push(i);
+     
+        while(!que.empty())
+        {
+            int u=que.front();
+            que.pop();
+            for(int i=0;i<edge[u].size();i++)
+            {
+                int v=edge[u][i];
+                if(d[v]!=-1) continue;
+                d[v]=d[u]+1;
+                que.push(v);
+            }
+        }
+  }
+
+  void query(char* buf){
+    int len=strlen(buf);
+    int now=root;
+    int top=-1;
+    printf("%d\n",d[root]);
+    for(int i=0;i<len;i++){
+      if(buf[i]=='-')
+      {
+         if(top>=0) top--;
+         if(top>=0) now=st[top];
+         else now=root;
+         printf("%d\n",d[now]);
+      }
+      else{
+          now=next[now][buf[i]-'a'];
+          st[++top]=now;
+          printf("%d\n",d[now]);
+      }
+    }
+  }
+};
+char buf[maxnode];
+trie ac;
 int main(){
-    freopen("data.in","r",stdin);
-     freopen("data.out","w",stdout);
- //ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+ // ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
     int n;
     while(scanf("%d",&n)==1)
     {
-        mem(ans,0x3f);
-        for(int i=0;i<n;i++)
-        {
-            scanf("%s",s[i]);
-            getfail(s[i],i);
-        }
-        scanf("%s",buf);
-        kmp(buf,n);
-        int len=strlen(buf);
-        printf("%d\n",prea);
-        for(int i=0;i<len;i++)
-          printf("%d\n",ans[i]);
+    ac.init();
+    for(int i=0;i<n;i++)
+        scanf("%s",buf),ac.inser(buf);
+        //cin>>buf,ac.inser(buf);
+    ac.build();
+    ac.bfs();
+    scanf("%s",buf);
+    ac.query(buf);
+    //cin>>buf;
+    // cout<<ac.query(buf)<<endl;
     }
- return 0;
-  }
+
+return 0;
+}
+
