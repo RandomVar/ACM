@@ -1,3 +1,11 @@
+/*
+给定一个n个点的无向图，m次加边或者删边操作。
+在每次操作后统计有多少个匹配包含 k = 1,2,..., n/2条边。
+n<=10,m<=3e4
+
+加边 f[S]+=f[S−u−v]（s包含u,v)
+减边 f[S]−=f[S−u−v]
+*/
 #include<bits/stdc++.h>
 #define pb(x) push_back(x)
 #define fir first
