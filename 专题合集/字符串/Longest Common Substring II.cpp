@@ -17,10 +17,13 @@ ll gcd(ll a,ll b) { return b?gcd(b,a%b):a;}
     #endif
 */
 const int maxn = 1e5+100;
+struct node{
+    int fir,sec,thir;
+};
 struct SAM
 {
     int len[maxn << 1], link[maxn << 1], ch[maxn << 1][26];
-     pair<int,int> ans[maxn<<1];
+    int mi[maxn<<1],ma[maxn<<1];
     int sz, rt, last;
     int newnode(int x = 0)
     {
@@ -60,37 +63,41 @@ struct SAM
         for (int i = 0; i < sz; i++) topcnt[len[i]]++;
         for (int i = 0; i < maxn - 1; i++) topcnt[i + 1] += topcnt[i];
         for (int i = 0; i < sz; i++) topsam[--topcnt[len[i]]] = i;
+        for(int i=0;i<sz;i++) mi[i]=len[i];
     }
-   void pre()
-   {
-       for(int i=0;i<sz;i++)
-        ans[i].fir=0,ans[i].sec=inf;
-   }
+   
     void biao(char *s)
     {
         int l=strlen(s);
         int v=0;
-        for(int i=0;i<l;i++)
+        int llen=0;
+        mem(ma,0);
+       for(int i=0;i<l;i++)
         {
-            while(v&&ch[v][s[i]-'a']==-1) v=link[v];
+            while(v&&ch[v][s[i]-'a']==-1) v=link[v],llen=len[v];
             
             if(ch[v][s[i]-'a']!=-1) 
             {
-                ans[ch[v][s[i]-'a']].fir++;
-                ans[ch[v][s[i]-'a']].sec=min(ans[ch[v][s[i]-'a']].sec,len[v]+1);
-                // cout<<v<<" "<< ans[ch[v][s[i]-'a']].fir<<" "<< ans[ch[v][s[i]-'a']].sec<<endl;
                 v=ch[v][s[i]-'a']; 
-               
+                llen++;
+                ma[v]=max(ma[v],llen);
+                
             }
         }
+        for(int i=sz-1;i>=0;i--)
+        {
+            int u=topsam[i];
+            mi[u]=min(mi[u],ma[u]);
+            ma[link[u]]=max(ma[u],ma[link[u]]);
+        }
     }
-    int solve(int n)
+
+    int solve()
     {
         int ret=0;
         for(int i=0;i<sz;i++)
         {
-            if(ans[i].fir==n) 
-               ret=max(ret,ans[i].sec);
+           ret=max(ret,mi[i]);
         }
         return ret;
     }
@@ -112,14 +119,13 @@ int main(){
             sam.extend(s[i]-'a');
         }
         int n=0;
-        sam.pre();
+        sam.sort();
         while(scanf("%s",s)!=EOF)
         {
+             n++;
             sam.biao(s);
-            // cout<<s<<endl;
-          n++;
         }
-        printf("%d\n",sam.solve(n));
+        printf("%d\n",sam.solve());
     }
  return 0;
   }

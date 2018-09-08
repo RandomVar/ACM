@@ -63,9 +63,9 @@ int main(){
    int n;
    while(cin>>n)
    {
-       mem(G,-1);
+       mem(G,0x3f);
        mem(cc,0);
-
+      for(int i=1;i<=4;i++) G[i][i]=0;
        for(int i=1;i<=n;i++)
        {
            int u,v,val;
@@ -91,7 +91,6 @@ int main(){
                 {
                   if(i!=j)    
                       G[i][j]=-edge[i][j][0];
-                  else G[i][j]=0;
                 }
                 cc[i][j]=ans;
            }
@@ -110,11 +109,11 @@ int main(){
               if((i&(1<<j))==0) continue;
               int u=j/4+1;
               int v=j%4+1;
-            if(u>v) continue;
-            if(G[u][v]==-1) continue;
+             if(u>v) continue;
+            if(G[u][v]==INF) continue;
               ans+=G[u][v];
              vis[u]=vis[v]=1;
-           if(G[u][v]!=0)   
+             
              add(u,v);
              Union(u,v);
             // cout<<u<<" "<<v<<endl;
@@ -125,7 +124,12 @@ int main(){
               int u=j/4+1;
               int v=j%4+1;
               if(u>v) continue;
-              if(vis[u]||vis[v]) ans+=cc[u][v];
+              if(vis[u]||vis[v]) 
+                 {
+                     ans+=cc[u][v];
+                 
+                 }
+                 if(vis[u]&&vis[v]&&G[u][v]<0) Union(u,v);
           }
           
           int p=-1;int flag=1;
@@ -141,18 +145,10 @@ int main(){
           if(flag&&ok()) 
           {
               daan=max(daan,ans);
-             /* if(daan==425)
-              {
-               for(int i=1;i<=4;i++)
-                cout<<d[i]<<" ";
-                cout<<endl;
-          }*/
           }
         
        }
        cout<<daan<<endl;
-
-
    }
  return 0;
   }
