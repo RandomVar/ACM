@@ -1,3 +1,4 @@
+/*贪心 误*/
 #include<bits/stdc++.h>
 #define pb(x) push_back(x)
 #define fir first

@@ -1,3 +1,4 @@
+/*卡过去的全排列*/
 #include<bits/stdc++.h>
 #define pb(x) push_back(x)
 #define fir first
