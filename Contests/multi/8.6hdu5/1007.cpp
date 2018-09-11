@@ -7,21 +7,17 @@ using namespace std;
 typedef long long ll;
 const int maxn=1e5+10;
 const int mod=(1<<30);
+const int INF=0x3f3f3f3f;
 struct node
 {
     int l;
     int r;
     int val;
-    bool operator<(const node &b)const
-    {
-        return val>b.val;
-    }
 }a[5000008];
 int N,M;
 unsigned x,y,z,w;
 unsigned f[15000008];
-
-int cnt[maxn*4];
+int sum[maxn*4];
 unsigned func()
 {
     x=x^(x<<11);
@@ -37,28 +33,27 @@ unsigned func()
 ll ans;
 void pushup(int rt)
 {
-    cnt[rt]=cnt[lson]+cnt[rson];
+    sum[rt]=min(sum[lson],sum[rson]);
 }
-
 void build(int L,int R,int rt)
 {
-    cnt[rt]=0;
     if(L==R)
     {
-        return ;
+        sum[rt]=0;
+        return;
     }
     int mid=(L+R)>>1;
     build(Lson);
     build(Rson);
+    pushup(rt);
 }
 void update(int l,int r,int val,int L,int R,int rt)
 {
-    if(cnt[rt]==(R-L+1))
-        return ;
+    if(val<=sum[rt])
+        return;
     if(L==R)
     {
-        ans=ans^(1LL*L*val);
-        cnt[rt]=1;
+        sum[rt]=max(val,sum[rt]);
         return ;
     }
     int mid=(L+R)>>1;
@@ -67,6 +62,17 @@ void update(int l,int r,int val,int L,int R,int rt)
     if(r>mid)
         update(l,r,val,Rson);
     pushup(rt);
+}
+void query(int L,int R,int rt)
+{
+    if(L==R)
+    {
+        ans=ans^(1LL*L*sum[rt]);
+        return ;
+    }
+    int mid=(L+R)>>1;
+    query(Lson);
+    query(Rson);
 }
 int main()
 {
@@ -80,18 +86,13 @@ int main()
         build(1,N,1);
         for(int i=1;i<=M;i++)
         {
-            a[i].l=min(f[3*i-2]%N+1,f[3*i-1]%N+1);
-            a[i].r=max(f[3*i-2]%N+1,f[3*i-1]%N+1);
-            a[i].val=f[i*3]%mod;
+            int l=min(f[3*i-2]%N+1,f[3*i-1]%N+1);
+            int r=max(f[3*i-2]%N+1,f[3*i-1]%N+1);
+            int val=f[i*3]%mod;
+            update(l,r,val,1,N,1);
         }
-        sort(a+1,a+1+M);
         ans=0;
-        for(int i=1;i<=M;i++)
-        {
-            update(a[i].l,a[i].r,a[i].val,1,N,1);
-            if(cnt[1]==N)
-            break;
-        }
+        query(1,N,1);
         printf("%lld\n",ans);
     }
     return 0;
