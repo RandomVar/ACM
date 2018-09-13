@@ -30,13 +30,13 @@ int main()
     for(int i=1;i<=n;i++)
       for(int s=tot;s>=a[i].m;s--)
       {
-        dp[s]=min(dp[s],dp[s-a[i].m]+a[i].p);
+        dp[s]=min(dp[s],dp[s-a[i].m]+a[i].p-dp[s-a[i].m]*a[i].p);
         // cout<<dp[s]<<" "<<dp[s-a[i].m]<<" "<<a[i].p<<endl;
       }
       int ans=0;
       for(int s=tot;s>=0;s--)
       {
-        if(dp[s]<=p) ans=max(ans,s);
+        if(dp[s]<p) ans=max(ans,s);
       }
     printf("Case %d: %d\n",++cas,ans);
   }
