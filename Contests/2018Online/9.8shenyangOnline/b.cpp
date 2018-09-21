@@ -16,6 +16,7 @@ ll gcd(ll a,ll b) { return b?gcd(b,a%b):a;}
      freopen("data.out","w",stdout);
     #endif
 */
+for each crystal synthes is equation,all ujaredifferent.
 const int maxn=205;
 char s[maxn];
 int st[maxn];
