@@ -1,64 +1,57 @@
-#include <bits/stdc++.h>
-using namespace std;
-const int inf = 0x3f3f3f3f;
-const int maxn = 200000 + 100;
-typedef long long ll;
-typedef long double ld;
+ll tree[maxn<<2];
+ll seg[maxn<<2];
+void pushup(int rt)
+{
+    tree[rt]=tree[rt<<1]+tree[rt<<1|1];
+}
+void build(int l,int r,int rt)
+{
+    seg[rt]=0;
+    if(l==r)
+    {
+        scanf("%lld", &tree[rt]);
+        return;
+    }
+    int mid=(l+r)/2;
+    build(l,mid,rt<<1);
+    build(mid+1,r,rt<<1|1);
+    pushup(rt);
+}
+void pushdown(int len,int rt)
+{
+   if(seg[rt])
+   {
+       tree[rt<<1]=(len-len/2)*seg[rt];
+        tree[rt<<1|1]=(len/2)*seg[rt];
+       seg[rt<<1|1]=seg[rt<<1]=seg[rt];
+      seg[rt]=0;
+   }
+}
 
-int n;
-int a[maxn];
-vector<int> disc;
-ll bit1[maxn];
-ll bitsum[maxn];
-int inline lsb(int x)
+void update(int l,int r,int L,int R,ll val,int rt)
 {
-    return x & (-x);
-}
-ll query(ll cc[], int x)
-{
-    ll ret = 0;
-    while (x)
+    if(l>=L&&r<=R)
     {
-        ret += cc[x];
-        x -= lsb(x);
+        tree[rt]=(r-l+1)*val;
+        seg[rt]=val;
+        return;
     }
-    return ret;
+    pushdown(r-l+1,rt);
+    int mid=(l+r)/2;
+    if(L<=mid) update(l,mid,L,R,val,rt<<1);
+    if(R>mid) update(mid+1,r,L,R,val,rt<<1|1);
+    pushup(rt);
 }
-void add(ll cc[], int x, int b)
+ll query(int l,int r,int L,int R,int rt)
 {
-    while (x < disc.size())
+    if(l>=L&&r<=R)
     {
-        cc[x] += b;
-        x += lsb(x);
+        return tree[rt];
     }
+    pushdown(r-l+1.rt);
+    int mid=(l+r)/2;
+    ll ans=0;
+    if(L<=mid)   ans+=query(l,mid,L,R,rt<<1);
+    if(R>mid) ans+=query(mid+1,r,L,R,rt<<1|1);
+    return ans;
 }
-int main()
-{
-#ifndef ONLINE_JUDGE
-    freopen("1.in", "r", stdin);
-    freopen("1.out", "w", stdout);
-#endif
-    while (~scanf("%d", &n))
-    {
-        disc = {-inf, inf};
-        for (int i = 0; i < n; i++)
-        {
-            scanf("%d", a + i);
-            disc.push_back(a[i]);
-        }
-        sort(disc.begin(), disc.end());
-        disc.erase(unique(disc.begin(), disc.end()), disc.end());
-        ld ans = 0;
-        for (int i = 0; i < n; i++)
-        {
-            int id = lower_bound(disc.begin(), disc.end(), a[i]) - disc.begin();
-            int L = id - 1, R = id;
-            if (disc[id - 1] == a[i] - 1) L--;
-            if (disc[id + 1] == a[i] + 1) R++;
-            ans += a[i] * (query(bit1, disc.size() - 1) - query(bit1, R) + query(bit1, L))
-                - (query(bitsum, disc.size() - 1) - query(bitsum, R) + query(bitsum, L));
-            add(bit1, id, 1);
-            add(bitsum, id, a[i]);
-        }
-        cout << fixed << setprecision(0) << ans << '\n';
-    }
