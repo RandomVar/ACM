@@ -1,56 +1,20 @@
-#include<bits/stdc++.h>
+#include<cstdio>
+#include<cstdlib>
+#include<cstring>
+#include<cmath>
+#include<iostream>
+#include<algorithm>
+#include<ext/pb_ds/assoc_container.hpp> //tree 和 hash_table 的共用头文件
+#include<ext/pb_ds/tree_policy.hpp> //tree 头文件
+#include<ext/pb_ds/hash_policy.hpp> //hash_table 头文件
 #define ll long long
+#define max(a,b) a>b?a:b
+#define min(a,b) a<b?a:b
 using namespace std;
-const int maxn=5010;
-ll a[maxn];
-int pos[maxn];
-int f[maxn];
-int mp[maxn];
-int judge(int s,int t)
-{
-    ll x=a[s]*a[t];
-    if(x<0) return 0;
-    ll c=sqrt(x);
-    if(c*c!=x) return 0;
- 
- return 1;
-}
-int main()
-{
-    int n;
-    while(scanf("%d",&n)==1)
-    {
-        memset(f,0,sizeof(f));
-        memset(pos,0,sizeof(pos));
-        for(int i=1;i<=n;i++)
-         scanf("%lld",&a[i]);
-        int k=0;
-        for(int i=1;i<=n;i++)
-         {
-             if(pos[i]) continue;
-            pos[i]=++k;
-           for(int j=i+1;j<=n;i++)
-           {
-             if(judge(i,j))
-               pos[j]=k;
-           }
-         }
-       for(int i=1;i<=n;i++)
-       {
-           int cnt=0;
-           memset(mp,0,sizeof(int)*(k+3));
-        for(int j=i;j<=n;j++)
-        {
-            if(!mp[pos[j]])
-              {
-                  cnt++;
-                  mp[pos[j]]=1;
-              }
-            f[cnt]++;
-         }
-       }
-        for(int i=1;i<=n;i++)
-          printf("%d%c",f[i],i==n?'\n':' ');
+using namespace __gnu_pbds;//最好加上这一句，不然你会写得很累
 
-    }
+int main(){
+
+    return 0;
 }
+
