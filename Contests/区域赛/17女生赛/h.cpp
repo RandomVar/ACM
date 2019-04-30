@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+#define ll long long
+using namespace std;
+typedef vector<ll> vec;
+typedef vector<vec> mat;
+const ll mod=1e9+7;
+//A*B
+mat mul(mat &A,mat &B){
+	mat C(A.size(),vec(B[0].size()));
+	for(int i=0;i<A.size();i++)
+	  for(int k=0;k<B.size();k++)
+	    for(int j=0;j<B[0].size();j++)
+	      C[i][j]=(C[i][j]+A[i][k]*B[k][j])%mod;
+	return C;
+}
+//A^n
+mat pow(mat A,ll n){
+	mat B(A.size(),vec(A.size()));
+	for(int i=0;i<A.size();i++)
+	  B[i][i]=1;
+	while(n>0){
+		if(n&1) B=mul(B,A);
+		A=mul(A,A);
+		n>>=1;
+	}
+	return B;
+}
+ll solve(ll n){
+	mat A(4,vec(4));//行数，列数
+	A[0][0]=1;A[0][1]=0;A[0][2]=1;A[0][3]=0;
+	A[1][0]=1;A[1][1]=0;A[1][2]=0;A[1][3]=0;
+  A[2][0]=0;A[2][1]=1;A[2][2]=0;A[2][3]=0;
+  A[3][0]=0;A[3][1]=0;A[3][2]=0;A[3][3]=0;
+	mat B(4,vec(1));
+  B[0][0]=2;B[1][0]=1;B[2][0]=1;B[3][0]=0;
+  A=pow(A,n);
+  A=mul(A,B);
+  // cout<<A[2][0]<<endl;
+	return (A[0][0]+A[2][0])%mod;
+  // cout<<A[1][0]<<endl;
+}
+int main()
+{
+  int t;
+  scanf("%d\n",&t);
+  // cin>>t;
+  while(t--)
+  {
+    ll n;
+    scanf("%lld",&n);
+    printf("%lld\n",solve(n-2)%mod);
+    // cin>>n;
+  //  cout<<(solve(n)+solve(n-2))%mod<<endl;
+  }
+}
